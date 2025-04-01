@@ -1,9 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+// Import icons from react-icons (you'll need to install it)
+import { FaUser, FaCalendarAlt, FaUsers, FaTrash } from 'react-icons/fa';
 
 function App() {
-  // State for hosts, meetings, and participants
   const [hosts, setHosts] = useState([]);
   const [meetings, setMeetings] = useState([]);
   const [participants, setParticipants] = useState([]);
@@ -11,49 +14,33 @@ function App() {
   const [meetingData, setMeetingData] = useState({ name: '', location: '', date: '' });
   const [participantData, setParticipantData] = useState({ fullName: '', email: '' });
 
-  // Create operations
   const createHost = (fullName, email) => {
-    const host = {
-      id: Date.now(),
-      fullName: fullName,
-      email: email
-    };
-    setHosts([...hosts, host]); // Update state with new host
+    const host = { id: Date.now(), fullName, email };
+    setHosts([...hosts, host]);
   };
 
   const createMeeting = (name, location, date) => {
-    const meeting = {
-      id: Date.now(),
-      name: name,
-      location: location,
-      date: new Date(date)
-    };
-    setMeetings([...meetings, meeting]); // Update state with new meeting
+    const meeting = { id: Date.now(), name, location, date: new Date(date) };
+    setMeetings([...meetings, meeting]);
   };
 
   const createParticipant = (fullName, email) => {
-    const participant = {
-      id: Date.now(),
-      fullName: fullName,
-      email: email
-    };
-    setParticipants([...participants, participant]); // Update state with new participant
+    const participant = { id: Date.now(), fullName, email };
+    setParticipants([...participants, participant]);
   };
 
-  // Delete operations
   const deleteHost = (hostId) => {
-    setHosts(hosts.filter(host => host.id !== hostId)); // Update state by filtering out the host
+    setHosts(hosts.filter(host => host.id !== hostId));
   };
 
   const deleteMeeting = (meetingId) => {
-    setMeetings(meetings.filter(meeting => meeting.id !== meetingId)); // Update state by filtering out the meeting
+    setMeetings(meetings.filter(meeting => meeting.id !== meetingId));
   };
 
   const deleteParticipant = (participantId) => {
-    setParticipants(participants.filter(participant => participant.id !== participantId)); // Update state by filtering out the participant
+    setParticipants(participants.filter(participant => participant.id !== participantId));
   };
 
-  // Handle form submissions
   const handleHostSubmit = (e) => {
     e.preventDefault();
     createHost(hostData.fullName, hostData.email);
@@ -75,10 +62,15 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        
+        <div className="app-title">
+          <h1>Meeting Manager</h1>
+          <p>Organize your meetings with ease</p>
+        </div>
+      </header>
+      <main className="App-main">
         <div className="content-container">
           {/* Host Form */}
-          <form onSubmit={handleHostSubmit}>
+          <form onSubmit={handleHostSubmit} className="form-card">
             <h2>Create Host</h2>
             <input
               type="text"
@@ -96,7 +88,7 @@ function App() {
           </form>
 
           {/* Meeting Form */}
-          <form onSubmit={handleMeetingSubmit}>
+          <form onSubmit={handleMeetingSubmit} className="form-card">
             <h2>Create Meeting</h2>
             <input
               type="text"
@@ -110,16 +102,18 @@ function App() {
               value={meetingData.location}
               onChange={(e) => setMeetingData({ ...meetingData, location: e.target.value })}
             />
-            <input
-              type="date"
-              value={meetingData.date}
-              onChange={(e) => setMeetingData({ ...meetingData, date: e.target.value })}
+            <DatePicker
+              selected={meetingData.date ? new Date(meetingData.date) : null}
+              onChange={(date) => setMeetingData({ ...meetingData, date: date })}
+              placeholderText="Select Date"
+              dateFormat="MM/dd/yyyy"
+              className="date-picker-input"
             />
             <button type="submit">Add Meeting</button>
           </form>
 
           {/* Participant Form */}
-          <form onSubmit={handleParticipantSubmit}>
+          <form onSubmit={handleParticipantSubmit} className="form-card">
             <h2>Create Participant</h2>
             <input
               type="text"
@@ -138,36 +132,85 @@ function App() {
 
           {/* Display Lists */}
           <div className="list-section">
-            <h2>Hosts</h2>
-            {hosts.map(host => (
-              <div key={host.id} className="list-item">
-                <span>{host.fullName} ({host.email})</span>
-                <button onClick={() => deleteHost(host.id)}>Delete</button>
-              </div>
-            ))}
+            <h2 className="list-title">
+              <FaUser className="list-icon" /> Hosts
+            </h2>
+            {hosts.length === 0 ? (
+              <p className="empty-message">No hosts added yet.</p>
+            ) : (
+              hosts.map(host => (
+                <div key={host.id} className="list-item">
+                  <div className="list-item-content">
+                    <div className="list-item-header">
+                      <span className="list-item-name">{host.fullName}</span>
+                    </div>
+                    <div className="list-item-details">
+                      <span className="list-item-email">{host.email}</span>
+                    </div>
+                  </div>
+                  <button onClick={() => deleteHost(host.id)} className="delete-btn">
+                    <FaTrash />
+                  </button>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="list-section">
-            <h2>Meetings</h2>
-            {meetings.map(meeting => (
-              <div key={meeting.id} className="list-item">
-                <span>{meeting.name} - {meeting.location} - {meeting.date.toDateString()}</span>
-                <button onClick={() => deleteMeeting(meeting.id)}>Delete</button>
-              </div>
-            ))}
+            <h2 className="list-title">
+              <FaCalendarAlt className="list-icon" /> Meetings
+            </h2>
+            {meetings.length === 0 ? (
+              <p className="empty-message">No meetings scheduled yet.</p>
+            ) : (
+              meetings.map(meeting => (
+                <div key={meeting.id} className="list-item">
+                  <div className="list-item-content">
+                    <div className="list-item-header">
+                      <span className="list-item-name">{meeting.name}</span>
+                    </div>
+                    <div className="list-item-details">
+                      <span className="list-item-location">{meeting.location}</span>
+                      <span className="list-item-date">{meeting.date.toDateString()}</span>
+                    </div>
+                  </div>
+                  <button onClick={() => deleteMeeting(meeting.id)} className="delete-btn">
+                    <FaTrash />
+                  </button>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="list-section">
-            <h2>Participants</h2>
-            {participants.map(participant => (
-              <div key={participant.id} className="list-item">
-                <span>{participant.fullName} ({participant.email})</span>
-                <button onClick={() => deleteParticipant(participant.id)}>Delete</button>
-              </div>
-            ))}
+            <h2 className="list-title">
+              <FaUsers className="list-icon" /> Participants
+            </h2>
+            {participants.length === 0 ? (
+              <p className="empty-message">No participants added yet.</p>
+            ) : (
+              participants.map(participant => (
+                <div key={participant.id} className="list-item">
+                  <div className="list-item-content">
+                    <div className="list-item-header">
+                      <span className="list-item-name">{participant.fullName}</span>
+                    </div>
+                    <div className="list-item-details">
+                      <span className="list-item-email">{participant.email}</span>
+                    </div>
+                  </div>
+                  <button onClick={() => deleteParticipant(participant.id)} className="delete-btn">
+                    <FaTrash />
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
-      </header>
+      </main>
+      <footer className="App-footer">
+        <p>© 2025 Meeting Manager. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
