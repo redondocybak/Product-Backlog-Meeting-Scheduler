@@ -3,7 +3,6 @@ import './App.css';
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-// Import icons from react-icons (you'll need to install it)
 import { FaUser, FaCalendarAlt, FaUsers, FaTrash } from 'react-icons/fa';
 
 function App() {
