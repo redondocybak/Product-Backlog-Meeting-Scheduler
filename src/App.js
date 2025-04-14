@@ -62,7 +62,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div className="app-title">
-          <h1>Meeting Manager</h1>
+          <h1>Meeting Scheduler</h1>
           <p>Organize your meetings with ease</p>
         </div>
       </header>
@@ -208,7 +208,7 @@ function App() {
         </div>
       </main>
       <footer className="App-footer">
-        <p>© 2025 Meeting Manager. All rights reserved.</p>
+        <p>© 2025 Meeting Scheduler. All rights reserved.</p>
       </footer>
     </div>
   );
